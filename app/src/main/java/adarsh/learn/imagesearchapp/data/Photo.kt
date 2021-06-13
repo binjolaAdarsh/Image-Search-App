@@ -1,4 +1,4 @@
-package adarsh.learn.imagesearchapp
+package adarsh.learn.imagesearchapp.data
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

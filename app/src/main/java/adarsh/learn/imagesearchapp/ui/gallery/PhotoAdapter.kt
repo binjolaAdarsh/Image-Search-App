@@ -13,9 +13,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import dagger.hilt.android.scopes.FragmentScoped
+import javax.inject.Inject
 
-class PhotoAdapter : PagingDataAdapter<Photo, PhotoAdapter.PhotoViewHolder>(PHOTO_DIFF_UTIL) {
+@FragmentScoped
+class PhotoAdapter @Inject constructor() : PagingDataAdapter<Photo, PhotoAdapter.PhotoViewHolder>(PHOTO_DIFF_UTIL) {
 
+    private var onItemClickListener: ((Photo) -> Unit)? = null
+    fun setOnItemClickListener(listener: (Photo) -> Unit) {
+        onItemClickListener = listener
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
         val inflater = ItemImagesBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PhotoViewHolder(inflater)
@@ -28,8 +35,21 @@ class PhotoAdapter : PagingDataAdapter<Photo, PhotoAdapter.PhotoViewHolder>(PHOT
         }
     }
 
-    class PhotoViewHolder(private val binding: ItemImagesBinding) :
+   inner class PhotoViewHolder(private val binding: ItemImagesBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.root.setOnClickListener {
+                val position = bindingAdapterPosition
+                if(position!= RecyclerView.NO_POSITION){
+                        val item  = getItem(position)
+                    if(item!= null){
+                        onItemClickListener?.invoke(item)
+                    }
+                }
+
+            }
+        }
+
         fun bind(photo: Photo) {
             binding.apply {
                 Glide.with(itemView).setDefaultRequestOptions(RequestOptions.diskCacheStrategyOf(
@@ -43,6 +63,7 @@ class PhotoAdapter : PagingDataAdapter<Photo, PhotoAdapter.PhotoViewHolder>(PHOT
         }
 
     }
+
 
 
     companion object {

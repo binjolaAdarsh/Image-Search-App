@@ -10,9 +10,9 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.item_footer.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -35,7 +35,7 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment) {
                 header = PhotoLoadStateAdapter() { adapter.retry() },
                 footer = PhotoLoadStateAdapter() { adapter.refresh() }
             )
-            btRetry.setOnClickListener { adapter.retry() }
+            buttonRetry.setOnClickListener { adapter.retry() }
         }
         viewModel.photos.observe(viewLifecycleOwner) {
             adapter.submitData(viewLifecycleOwner.lifecycle, it)
@@ -46,8 +46,8 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment) {
             binding.apply {
                 progressBar.isVisible = it.source.refresh is LoadState.Loading
                 recyclerView.isVisible = it.source.refresh is LoadState.NotLoading
-                btRetry.isVisible = it.source.refresh is LoadState.Error
-                tvError.isVisible = it.source.refresh is LoadState.Error
+                buttonRetry.isVisible = it.source.refresh is LoadState.Error
+                textViewError.isVisible = it.source.refresh is LoadState.Error
 
                 if (it.source.refresh is LoadState.NotLoading && it.append.endOfPaginationReached
                     && adapter.itemCount < 1
@@ -58,6 +58,10 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment) {
                     textViewEmpty.isVisible = false
                 }
             }
+        }
+        adapter.setOnItemClickListener {
+            val action  = GalleryFragmentDirections.actionGalleryFragment2ToDetailFragment(it)
+            findNavController().navigate(action)
         }
 
         setHasOptionsMenu(true)

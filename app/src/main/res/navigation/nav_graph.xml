@@ -8,5 +8,18 @@
         android:id="@+id/galleryFragment2"
         android:name="adarsh.learn.imagesearchapp.ui.gallery.GalleryFragment"
         android:label="gallery_fragment"
-        tools:layout="@layout/gallery_fragment" />
+        tools:layout="@layout/gallery_fragment" >
+        <action
+            android:id="@+id/action_galleryFragment2_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="adarsh.learn.imagesearchapp.ui.detail.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" >
+        <argument
+            android:name="photo"
+            app:argType="adarsh.learn.imagesearchapp.data.Photo" />
+    </fragment>
 </navigation>

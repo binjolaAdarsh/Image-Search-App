@@ -22,7 +22,10 @@ class GalleryFragment: Fragment(R.layout.gallery_fragment) {
         _binding = GalleryFragmentBinding.bind(view)
         binding.apply {
             recyclerView.setHasFixedSize(true)
-            recyclerView.adapter = adapter
+            recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
+                header = PhotoLoadStateAdapter(){adapter.retry()},
+                footer = PhotoLoadStateAdapter(){adapter.refresh()}
+            )
         }
         viewModel.photos.observe(viewLifecycleOwner){
                 adapter.submitData(viewLifecycleOwner.lifecycle,it)
